@@ -1,5 +1,4 @@
 # parseur-articles-txt
-hamza
 
 Pour pouvoir exécuter le programme, écrire sur la ligne de commande le nom du programme suivi du répertoire qui contient tout les fichiers PDF à convertir en txt:
 
