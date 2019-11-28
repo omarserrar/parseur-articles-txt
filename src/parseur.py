@@ -18,10 +18,12 @@ def parsefile(txtfile):
 	filename = txtfile.split(".txt")[0].split('/')[-1]
 	outputname = "../out/PARSED_"+filename
 	fparsed = open(outputname,"w+")
-	fparsed.write(filename+'\n')
+	fparsed.write("<article>\n")
+	fparsed.write("<preamble>"+filename+'</preamble>\n')
 	with open(txtfile) as fp:
 		line = fp.readline()
-		fparsed.write(line.replace("\n"," ")+"\n")
+		
+		fparsed.write("<titre>"+line.replace("\n"," ")+"</titre>\n")
 		abstract = ""
 		while line:
 			if line.find("Abstract") != -1 or line.find("ABSTRACT") != -1 or line.find("abstract") != -1:
@@ -32,9 +34,10 @@ def parsefile(txtfile):
 					abstract = abstract + line.replace("\n"," ")
 					line = fp.readline()
 			if abstract != "":
-				fparsed.write(abstract)
+				fparsed.write("<abstract>"+abstract+"</abstract>\n")
 				break
 			line = fp.readline()
+		fparsed.write("</article>\n")
 	
 	fparsed.close()
 args = sys.argv
