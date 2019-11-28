@@ -1,0 +1,5 @@
+<article>
+<preamble>Doyle_2005_Automatic Categorization of Author Gender</preamble>
+<titre>Automatic Categorization of Author Gender </titre>
+<abstract>Abstract We present a method for automatic categorization of author gender via n-gram analysis. Using a corpus of British student essays, experiments using character-level, wordlevel, and part-of-speech n-grams are performed. The peak accuracy for all methods is roughly equal, reaching a maximum of 81%. These results are on par with other, established techniques, while retaining the simplicity and ease-of-generalization inherent in n-gram techniques. </abstract>
+</article>
