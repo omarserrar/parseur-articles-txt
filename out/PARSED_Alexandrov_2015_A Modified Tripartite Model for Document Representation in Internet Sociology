@@ -1,5 +1,0 @@
-<article>
-<preamble>Alexandrov_2015_A Modified Tripartite Model for Document Representation in Internet Sociology</preamble>
-<titre>A Modified Tripartite Model for Document </titre>
-<abstract>Abstract. Seven years ago Peter Mika (Yahoo! Research) proposed a tripartite model of actors, concepts and instances for document representation in the study of social networks. We propose a modified model, where instead of document authors we consider textual mentions of persons and institutions as actors. This representation proves to be more appropriate for the solution of a range of Internet Sociology tasks. In the paper we describe experiments with the modified model and provide some background on the tools that can be used to build it. The model is tested on the experimental corpora of Russian news (educational domain). The research reflects the pilot study findings. Keywords: Tripartite model · Document representation Social networks analysis · Internet sociology </abstract>
-</article>
