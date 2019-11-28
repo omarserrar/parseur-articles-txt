@@ -1,3 +1,3 @@
 # parseur-articles-txt
 
-TEXTf
+TEXTfr
