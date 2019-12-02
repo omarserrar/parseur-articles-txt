@@ -8,7 +8,7 @@ def find_ext(dr, ext):
 def pdftotext(pdffile):
 	txtfile = os.path.basename(pdffile)
 	txtfile = "../tmp/"+(txtfile.split(".pdf")[0]+'.txt')
-	myCmd = 'pdftotext '+pdffile.replace(" ", "\ ")+' '+txtfile.replace(" ", "\ ")
+	myCmd = 'pdftotext -enc UTF-8 '+pdffile.replace(" ", "\ ")+' '+txtfile.replace(" ", "\ ")
 	print 'brjbber '+pdffile
 	print myCmd
 	os.system(myCmd)
@@ -20,10 +20,18 @@ def parsefilexml(txtfile):
 	fparsed = open(outputname,"w+")
 	fparsed.write("<article>\n")
 	fparsed.write("<preamble>"+filename+'</preamble>\n')
+	auteur = ""
 	with open(txtfile) as fp:
+		titre = fp.readline()
 		line = fp.readline()
-		
-		fparsed.write("<titre>"+line.replace("\n"," ")+"</titre>\n")
+		if len(line) > 5:
+			titre += line
+			auteur = fp.readline()
+			line = fp.readline()
+			if len(line) > 5:
+				auteur += line
+		fparsed.write("<titre>"+titre.replace("\n"," ")+"</titre>\n")
+		fparsed.write("<auteur>"+auteur.replace("\n"," ")+"</auteur>\n")
 		abstract = ""
 		while line:
 			if line.find("Abstract") != -1 or line.find("ABSTRACT") != -1 or line.find("abstract") != -1:
@@ -37,19 +45,38 @@ def parsefilexml(txtfile):
 				fparsed.write("<abstract>"+abstract+"</abstract>\n")
 				break
 			line = fp.readline()
+		references = ""
+		while line:
+			if line.find("References") != -1 or line.find("REFERENCES") != -1 or line.find("References") != -1:
+				
+				while line:
+					references = references + line.replace("\n"," ")
+					line = fp.readline()
+			if references != "":
+				fparsed.write("<biblio>"+references+"</biblio>\n")
+				break
+			line = fp.readline()
 		fparsed.write("</article>\n")
 	
 	fparsed.close()
 
 def parsefiletxt(txtfile):
 	filename = txtfile.split(".txt")[0].split('/')[-1]
-	outputname = "../out/txt/PARSED_"+filename+".txt"
+	outputname = "../out/xml/PARSED_"+filename+".xml"
 	fparsed = open(outputname,"w+")
-	fparsed.write(""+filename+'\n')
+	fparsed.write(filename)
+	auteur = ""
 	with open(txtfile) as fp:
+		titre = fp.readline()
 		line = fp.readline()
-		
-		fparsed.write(line.replace("\n"," ")+"\n")
+		if len(line) > 5:
+			titre += line
+			auteur = fp.readline()
+			line = fp.readline()
+			if len(line) > 5:
+				auteur += line
+		fparsed.write(titre.replace("\n"," "))
+		fparsed.write(auteur.replace("\n"," "))
 		abstract = ""
 		while line:
 			if line.find("Abstract") != -1 or line.find("ABSTRACT") != -1 or line.find("abstract") != -1:
@@ -60,7 +87,18 @@ def parsefiletxt(txtfile):
 					abstract = abstract + line.replace("\n"," ")
 					line = fp.readline()
 			if abstract != "":
-				fparsed.write(abstract)
+				fparsed.write(abstract+"\n")
+				break
+			line = fp.readline()
+		references = ""
+		while line:
+			if line.find("References") != -1 or line.find("REFERENCES") != -1 or line.find("References") != -1:
+				
+				while line:
+					references = references + line.replace("\n"," ")
+					line = fp.readline()
+			if references != "":
+				fparsed.write(references)
 				break
 			line = fp.readline()
 	
