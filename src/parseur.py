@@ -2,6 +2,7 @@ import sys
 from glob import glob  
 from os import path
 import os
+ 
 def find_ext(dr, ext):
     return glob(path.join(dr,"*.{}".format(ext)))
    
@@ -13,7 +14,105 @@ def pdftotext(pdffile):
 	print myCmd
 	os.system(myCmd)
 	return txtfile
-	
+def abstract(fp):
+	line = fp.readline()
+	abstract = ""
+	while line:
+		if line.lower().find("abstract") != -1:
+			
+			while line:
+				if line.lower().find("introduction") != -1 :
+					break
+				abstract = abstract + line.replace("\n"," ")
+				line = fp.readline()
+		if abstract != "":
+			return abstract
+		else:
+			line = fp.readline()
+	return ""
+def introduction(fp):
+	fp.seek(0,0)
+	line = fp.readline()
+	introduction = ""
+	c = 0
+	while line:
+		if line.lower().find("introduction") != -1:
+			
+			while line:
+				if line == "\n" and c ==1:
+					break
+				if line == "\n":
+					c = 1
+				introduction = introduction + line.replace("\n"," ")
+				line = fp.readline()
+		if introduction != "":
+			return introduction
+		else:
+			line = fp.readline()
+	return ""
+def corp(fp):
+	line = fp.readline()
+	corp = ""
+	while line:
+		while line:
+			if line.lower().find("conclusion") != -1 or line.lower().find("references") != -1 or line.lower().find("discussion") != -1:
+				break
+			corp = corp + line.replace("\n"," ")
+			line = fp.readline()
+		if corp != "":
+			return corp
+		else:
+			line = fp.readline()
+def conclusion(fp):
+	fp.seek(0,0)
+	line = fp.readline()
+	conclusion = ""
+	while line:
+		if line.lower().find("conclusion") != -1:
+			while line:
+				if line.lower().find("references"):
+					break
+				conclusion = conclusion + line.replace("\n"," ")
+				line = fp.readline()
+		if conclusion != "":
+			return conclusion
+		else:
+			line = fp.readline()
+	return ""
+def discussion(fp):
+	fp.seek(0,0)
+	line = fp.readline()
+	conclusion = ""
+	while line:
+		if line.lower().find("discussion") != -1 or line.lower().find("conclusion"):
+			
+			while line:
+				if line.lower().find("conclusion"):
+					break
+				conclusion = conclusion + line.replace("\n"," ")
+				line = fp.readline()
+		if conclusion != "":
+			return conclusion
+		else:
+			line = fp.readline()
+	return ""
+def references(fp):
+	fp.seek(0,0)
+	line = fp.readline()
+	references = ""
+	while line:
+		if line.lower().find("references") != -1:
+			
+			while line:
+				if line == "\n":
+					break
+				references = references + line.replace("\n"," ")
+				line = fp.readline()
+		if references != "":
+			return references
+		else:
+			line = fp.readline()
+	return ""
 def parsefilexml(txtfile):
 	filename = txtfile.split(".txt")[0].split('/')[-1]
 	outputname = "../out/xml/PARSED_"+filename+".xml"
@@ -32,37 +131,16 @@ def parsefilexml(txtfile):
 				auteur += line
 		fparsed.write("<titre>"+titre.replace("\n"," ")+"</titre>\n")
 		fparsed.write("<auteur>"+auteur.replace("\n"," ")+"</auteur>\n")
-		abstract = ""
-		while line:
-			if line.find("Abstract") != -1 or line.find("ABSTRACT") != -1 or line.find("abstract") != -1:
-				
-				while line:
-					if line.find("INTRODUCTION") != -1 or line.find("Introduction") != -1 or line.find("introduction") != -1 or line == "\n" :
-						break
-					abstract = abstract + line.replace("\n"," ")
-					line = fp.readline()
-			if abstract != "":
-				fparsed.write("<abstract>"+abstract+"</abstract>\n")
-				break
-			line = fp.readline()
-		references = ""
-		while line:
-			if line.find("References") != -1 or line.find("REFERENCES") != -1 or line.find("References") != -1:
-				
-				while line:
-					references = references + line.replace("\n"," ")
-					line = fp.readline()
-			if references != "":
-				fparsed.write("<biblio>"+references+"</biblio>\n")
-				break
-			line = fp.readline()
+		fparsed.write("<abstract>"+abstract(fp)+"</abstract>\n")
+		fparsed.write("<introduction>"+introduction(fp)+"</introduction>\n")
+		fparsed.write("<corp>"+corp(fp)+"</corp>\n")
+		fparsed.write("<discussion>"+discussion(fp)+"</discussion>\n")
+		fparsed.write("<conclusion>"+conclusion(fp)+"</conclusion>\n")
+		fparsed.write("<references>"+references(fp)+"</references>\n")
 		fparsed.write("</article>\n")
-	
-	fparsed.close()
-
 def parsefiletxt(txtfile):
 	filename = txtfile.split(".txt")[0].split('/')[-1]
-	outputname = "../out/xml/PARSED_"+filename+".xml"
+	outputname = "../out/txt/PARSED_"+filename+".txt"
 	fparsed = open(outputname,"w+")
 	fparsed.write(filename)
 	auteur = ""
@@ -75,34 +153,26 @@ def parsefiletxt(txtfile):
 			line = fp.readline()
 			if len(line) > 5:
 				auteur += line
-		fparsed.write(titre.replace("\n"," "))
-		fparsed.write(auteur.replace("\n"," "))
-		abstract = ""
-		while line:
-			if line.find("Abstract") != -1 or line.find("ABSTRACT") != -1 or line.find("abstract") != -1:
-				
-				while line:
-					if line.find("INTRODUCTION") != -1 or line.find("Introduction") != -1 or line.find("introduction") != -1 or line == "\n" :
-						break
-					abstract = abstract + line.replace("\n"," ")
-					line = fp.readline()
-			if abstract != "":
-				fparsed.write(abstract+"\n")
-				break
-			line = fp.readline()
-		references = ""
-		while line:
-			if line.find("References") != -1 or line.find("REFERENCES") != -1 or line.find("References") != -1:
-				
-				while line:
-					references = references + line.replace("\n"," ")
-					line = fp.readline()
-			if references != "":
-				fparsed.write(references)
-				break
-			line = fp.readline()
-	
-	fparsed.close()
+		fparsed.write(titre.replace("\n"," ")+"\n")
+		fparsed.write(auteur.replace("\n"," ")+"\n")
+		fparsed.write(abstract(fp)+"\n")
+		fparsed.write(introduction(fp)+"\n")
+		fparsed.write(corp(fp)+"\n")
+		#fparsed.write("<discussion>"+discussion(fp)+"</discussion>\n")
+		fparsed.write(conclusion(fp)+"\n")
+		fparsed.write(references(fp)+"\n")
+def menu(files):
+	i=1
+	print("Entrez le numero du fichier que vous voulez parser...")
+	for file in files:
+		print("{} {}".format(i, file))
+		i= i+1
+	mode=int(raw_input('Input:'))
+	if mode > len(files) or mode <= 0:
+		print "Numero incorrect"
+		menu(files)
+	else:
+		return mode
 args = sys.argv
 
 if len(args) < 3 or (args[1] != "-x" and args[1] != "-t"):
@@ -114,12 +184,14 @@ if len(args) < 3 or (args[1] != "-x" and args[1] != "-t"):
 	print "Repertoire:"
 	print "Repertoire qui contient les fichiers PDF"
 else:	
+
 	filepath = args[2]
 	typesortie = args[1]
+	print(typesortie)
 	files = find_ext(filepath,"pdf")
-	for pdffile in files:
-		txtfile = pdftotext(pdffile)
-		if typesortie == "-t":
-			parsefiletxt(txtfile)
-		if typesortie == "-x":
-			parsefilexml(txtfile)
+	mode = menu(files)
+	txtfile = pdftotext(files[mode-1])
+	if typesortie == "-t":
+		parsefiletxt(txtfile)
+	if typesortie == "-x":
+		parsefilexml(txtfile)
