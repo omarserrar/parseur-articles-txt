@@ -54,15 +54,18 @@ def corp(fp):
 	line = fp.readline()
 	corp = ""
 	while line:
+		
 		while line:
-			if line.lower().find("conclusion") != -1 or line.lower().find("references") != -1 or line.lower().find("discussion") != -1:
+			lastfp = fp.tell()
+			if line.lower().find("conclusion\n") != -1 or line.lower().find("references\n") != -1 or line.lower().find("discussion\n") != -1 or line.lower().find("conclusions\n") != -1:
 				break
 			corp = corp + line.replace("\n"," ")
-			line = fp.readline()
-		if corp != "":
-			return corp
-		else:
-			line = fp.readline()
+			line = fp.readline()	
+		print(line)		
+		fp.seek(lastfp,0)
+		line = fp.readline()
+		print(line)
+		return corp
 def conclusion(fp):
 	fp.seek(0,0)
 	line = fp.readline()
@@ -70,7 +73,8 @@ def conclusion(fp):
 	while line:
 		if line.lower().find("conclusion") != -1:
 			while line:
-				if line.lower().find("references"):
+				if line.lower().find("references") != -1:
+					print(line)
 					break
 				conclusion = conclusion + line.replace("\n"," ")
 				line = fp.readline()
@@ -84,10 +88,10 @@ def discussion(fp):
 	line = fp.readline()
 	conclusion = ""
 	while line:
-		if line.lower().find("discussion") != -1 or line.lower().find("conclusion"):
+		if line.lower().find("discussion\n") != -1:
 			
 			while line:
-				if line.lower().find("conclusion"):
+				if line.lower().find("conclusion") != -1:
 					break
 				conclusion = conclusion + line.replace("\n"," ")
 				line = fp.readline()
@@ -99,13 +103,13 @@ def discussion(fp):
 def references(fp):
 	fp.seek(0,0)
 	line = fp.readline()
-	references = ""
+	
 	while line:
+		references = ""
 		if line.lower().find("references") != -1:
-			
 			while line:
-				if line == "\n":
-					break
+				if line.lower().find("references") != -1:
+					references = ""
 				references = references + line.replace("\n"," ")
 				line = fp.readline()
 		if references != "":
