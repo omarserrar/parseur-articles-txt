@@ -36,7 +36,7 @@ def introduction(fp):
 	introduction = ""
 	c = 0
 	while line:
-		if line.lower().find("introduction") != -1:
+		if line.lower().replace(' ','').find("introduction") != -1:
 			
 			while line:
 				if line == "\n" and c ==1:
@@ -56,6 +56,7 @@ def corp(fp):
 	while line:
 		
 		while line:
+			print("corp "+line)
 			lastfp = fp.tell()
 			if line.lower().find("conclusion\n") != -1 or line.lower().find("references\n") != -1 or line.lower().find("discussion\n") != -1 or line.lower().find("conclusions\n") != -1:
 				break
@@ -66,6 +67,7 @@ def corp(fp):
 		line = fp.readline()
 		print(line)
 		return corp
+	return ""
 def conclusion(fp):
 	fp.seek(0,0)
 	line = fp.readline()
